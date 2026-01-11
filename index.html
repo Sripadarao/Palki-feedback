@@ -23,9 +23,6 @@
       text-align: center;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    h1 {
-      margin-bottom: 5px;
-    }
     textarea, input, button {
       width: 100%;
       margin-top: 12px;
@@ -60,27 +57,27 @@
     <p id="msg" style="color:green;"></p>
   </div>
 
-  <!-- SUPABASE CLIENT -->
+  <!-- Load Supabase library -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
-    /* =========================
-       CONFIGURATION (CHANGE ONLY THIS)
-       ========================= */
+    /* ======================
+       CONFIG (CHANGE ONLY THIS)
+       ====================== */
     const SUPABASE_URL = "https://aaqqbfacbrgygspyxuci.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhcXFiZmFjYnJneWdzcHl4dWNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNDc4NTcsImV4cCI6MjA4MzcyMzg1N30.u-qO2viDRZVNW7XacyqXJzunGs2wexQ0X1YQr4CmJBg";
 
-    /* =========================
-       INITIALIZE SUPABASE
-       ========================= */
-    const supabase = window.supabase.createClient(
+    /* ======================
+       CREATE CLIENT (SAFE NAME)
+       ====================== */
+    const sbClient = window.supabase.createClient(
       SUPABASE_URL,
       SUPABASE_ANON_KEY
     );
 
-    /* =========================
-       GLOBAL FUNCTION (SAFARI SAFE)
-       ========================= */
+    /* ======================
+       GLOBAL FUNCTION (SAFARI FIX)
+       ====================== */
     window.submitFeedback = async function () {
       const name = document.getElementById("name").value.trim();
       const feedback = document.getElementById("feedback").value.trim();
@@ -90,13 +87,13 @@
         return;
       }
 
-      const { error } = await supabase
+      const result = await sbClient
         .from("feedback")
         .insert([{ name, feedback }]);
 
-      if (error) {
+      if (result.error) {
         alert("Failed to submit feedback");
-        console.error(error);
+        console.error(result.error);
       } else {
         document.getElementById("msg").innerText =
           "Thank you for your feedback ❤️";
