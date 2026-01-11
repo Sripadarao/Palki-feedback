@@ -39,12 +39,46 @@
     <h1>✨ Palki ✨</h1>
     <p>Boutique Feedback</p>
 
-    <input type="text" placeholder="Your Name (optional)">
-    <textarea rows="4" placeholder="Please share your experience with Palki"></textarea>
-    <button>Submit</button>
+    <input type="text" id="name" placeholder="Your Name (optional)">
+    <textarea id="feedback" rows="4" placeholder="Please share your experience with Palki"></textarea>
+    <button onclick="submitFeedback()">Submit</button>
 
     <p style="color:green;">Thank you for your feedback ❤️</p>
 </div>
+    
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script>
+  const supabaseUrl = "https://aaqqbfacbrgygspyxuci.supabase.co";
+  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhcXFiZmFjYnJneWdzcHl4dWNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNDc4NTcsImV4cCI6MjA4MzcyMzg1N30.u-qO2viDRZVNW7XacyqXJzunGs2wexQ0X1YQr4CmJBg";
+
+  const supabase = window.supabase.createClient(
+    supabaseUrl,
+    supabaseKey
+  );
+
+  async function submitFeedback() {
+    const name = document.getElementById("name").value;
+    const feedback = document.getElementById("feedback").value;
+
+    if (!feedback) {
+      alert("Please enter feedback");
+      return;
+    }
+
+    const { error } = await supabase
+      .from("feedback")
+      .insert([{ name, feedback }]);
+
+    if (error) {
+      alert("Error submitting feedback");
+      console.error(error);
+    } else {
+      alert("Thank you for your feedback ❤️");
+      document.getElementById("name").value = "";
+      document.getElementById("feedback").value = "";
+    }
+  }
+</script>
 </body>
 </html>
